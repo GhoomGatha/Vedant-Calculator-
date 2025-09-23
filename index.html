@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>📊 Vedant's Calculator Suite</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>📊 Vedant's Calculator Suite</h1>
+  <div class="hdr-actions">
+    <button id="themeToggle">🌙/☀️</button>
+    <button id="saveHistoryBtn">⬇️ Save</button>
+    <input id="historyFile" type="file" accept=".csv,.txt" style="display:none">
+    <button id="loadHistoryBtn">⬆️ Load</button>
+  </div>
+</header>
+
+<!-- Main tabs -->
+<div class="tabs" role="tablist" aria-label="Calculators">
+  <button class="tab-btn active" data-target="pane-simple">Simple</button>
+  <button class="tab-btn" data-target="pane-students">Students</button>
+  <button class="tab-btn" data-target="pane-scientific">Scientific</button>
+  <button class="tab-btn" data-target="pane-scientific-live">Scientific (Live) 🟢</button>
+
+  <!-- Everyday Tools placed in the middle -->
+  <button class="tab-btn" data-target="pane-everyday">Everyday Tools 🛠️</button>
+
+  <button class="tab-btn" data-target="pane-commerce">Commerce</button>
+  <button class="tab-btn" data-target="pane-stats">Statistics</button>
+  <button class="tab-btn" data-target="pane-matrix">Matrix</button>
+  <button class="tab-btn" data-target="pane-pchange">% Change</button>
+  <button class="tab-btn" data-target="pane-finance">Finance</button>
+  <button class="tab-btn" data-target="pane-emi">EMI</button>
+  <button class="tab-btn" data-target="pane-currency">Currency</button>
+</div>
+
+<div class="layout">
+  <div>
+    <!-- SIMPLE -->
+    <div class="card pane show" id="pane-simple">
+      <div class="calc-header">
+        <h3>Simple Calculator</h3>
+        <div style="font-size:.9rem;color:var(--muted)">Press "=" to evaluate</div>
+      </div>
+      <input id="simpleInput" class="display" placeholder="Type expression then press = (e.g. 200+10%)" />
+      <div class="live-result" id="simpleLive">Result: —</div>
+      <div class="grid">
+        <button class="key clear" onclick="clearInput('simple')">C</button>
+        <button class="key op" onclick="appendRaw('simple','%')">%</button>
+        <button class="key op" onclick="backspaceRaw('simple')">⌫</button>
+        <button class="key op" onclick="appendRaw('simple','/')">÷</button>
+
+        <button class="key num" onclick="appendRaw('simple','7')">7</button>
+        <button class="key num" onclick="appendRaw('simple','8')">8</button>
+        <button class="key num" onclick="appendRaw('simple','9')">9</button>
+        <button class="key op" onclick="appendRaw('simple','*')">×</button>
+
+        <button class="key num" onclick="appendRaw('simple','4')">4</button>
+        <button class="key num" onclick="appendRaw('simple','5')">5</button>
+        <button class="key num" onclick="appendRaw('simple','6')">6</button>
+        <button class="key op" onclick="appendRaw('simple','-')">−</button>
+
+        <button class="key num" onclick="appendRaw('simple','1')">1</button>
+        <button class="key num" onclick="appendRaw('simple','2')">2</button>
+        <button class="key num" onclick="appendRaw('simple','3')">3</button>
+        <button class="key op" onclick="appendRaw('simple','+')">+</button>
+
+        <button class="key num" onclick="appendRaw('simple','0')">0</button>
+        <button class="key num" onclick="appendRaw('simple','.')">.</button>
+        <button class="key eq" onclick="forceEval('simple')">=</button>
+      </div>
+    </div>
+
+    <!-- STUDENTS -->
+    <div class="card pane" id="pane-students" style="margin-top:12px">
+      <div class="calc-header">
+        <h3>Students Calculator</h3>
+        <div style="display:flex;gap:6px">
+          <button class="key fn" onclick="memClear()">MC</button>
+          <button class="key fn" onclick="memRecall()">MR</button>
+          <button class="key fn" onclick="memPlus()">M+</button>
+          <button class="key fn" onclick="memMinus()">M-</button>
+        </div>
+      </div>
+      <input id="studInput" class="display" placeholder="Type expression then = (supports % , √ , sin etc.)" />
+      <div class="live-result" id="studLive">Result: —</div>
+      <div class="grid">
+        <button class="key clear" onclick="clearInput('stud')">C</button>
+        <button class="key op" onclick="appendRaw('stud','%')">%</button>
+        <button class="key op" onclick="backspaceRaw('stud')">⌫</button>
+        <button class="key op" onclick="appendRaw('stud','/')">÷</button>
+
+        <button class="key num" onclick="appendRaw('stud','7')">7</button>
+        <button class="key num" onclick="appendRaw('stud','8')">8</button>
+        <button class="key num" onclick="appendRaw('stud','9')">9</button>
+        <button class="key op" onclick="appendRaw('stud','*')">×</button>
+
+        <button class="key num" onclick="appendRaw('stud','4')">4</button>
+        <button class="key num" onclick="appendRaw('stud','5')">5</button>
+        <button class="key num" onclick="appendRaw('stud','6')">6</button>
+        <button class="key op" onclick="appendRaw('stud','-')">−</button>
+
+        <button class="key num" onclick="appendRaw('stud','1')">1</button>
+        <button class="key num" onclick="appendRaw('stud','2')">2</button>
+        <button class="key num" onclick="appendRaw('stud','3')">3</button>
+        <button class="key op" onclick="appendRaw('stud','+')">+</button>
+
+        <button class="key num" onclick="appendRaw('stud','0')">0</button>
+        <button class="key num" onclick="appendRaw('stud','.')">.</button>
+        <button class="key eq" onclick="forceEval('stud')">=</button>
+      </div>
+      <div style="margin-top:8px" class="result-box" id="studMemBox">Memory: 0</div>
+    </div>
+
+    <!-- SCIENTIFIC (classic) -->
+    <div class="card pane" id="pane-scientific" style="margin-top:12px">
+      <div class="calc-header">
+        <h3>Scientific Calculator</h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="mode-toggle" id="sciModeBtn">Mode: <span id="sciModeLabel">DEG</span></button>
+        </div>
+      </div>
+      <input id="sciInput" class="display" placeholder="Classic scientific — press = to evaluate" />
+      <div class="live-result" id="sciLive">Result: —</div>
+
+      <div class="grid">
+        <button class="key clear" onclick="clearInput('sci')">C</button>
+        <button class="key fn" onclick="appendRaw('sci','(')">(</button>
+        <button class="key fn" onclick="appendRaw('sci',')')">)</button>
+        <button class="key fn" onclick="appendRaw('sci','^')">xʸ</button>
+
+        <button class="key fn" onclick="appendRaw('sci','sin')">sin</button>
+        <button class="key fn" onclick="appendRaw('sci','cos')">cos</button>
+        <button class="key fn" onclick="appendRaw('sci','tan')">tan</button>
+        <button class="key fn" onclick="appendRaw('sci','√')">√</button>
+
+        <button class="key fn" onclick="appendRaw('sci','log')">log</button>
+        <button class="key fn" onclick="appendRaw('sci','ln')">ln</button>
+        <button class="key fn" onclick="appendRaw('sci','π')">π</button>
+        <button class="key fn" onclick="appendRaw('sci','e')">e</button>
+
+        <button class="key num" onclick="appendRaw('sci','7')">7</button>
+        <button class="key num" onclick="appendRaw('sci','8')">8</button>
+        <button class="key num" onclick="appendRaw('sci','9')">9</button>
+        <button class="key op" onclick="appendRaw('sci','/')">÷</button>
+
+        <button class="key num" onclick="appendRaw('sci','4')">4</button>
+        <button class="key num" onclick="appendRaw('sci','5')">5</button>
+        <button class="key num" onclick="appendRaw('sci','6')">6</button>
+        <button class="key op" onclick="appendRaw('sci','*')">×</button>
+
+        <button class="key num" onclick="appendRaw('sci','1')">1</button>
+        <button class="key num" onclick="appendRaw('sci','2')">2</button>
+        <button class="key num" onclick="appendRaw('sci','3')">3</button>
+        <button class="key op" onclick="appendRaw('sci','-')">−</button>
+
+        <button class="key num" onclick="appendRaw('sci','0')">0</button>
+        <button class="key num" onclick="appendRaw('sci','.')">.</button>
+        <button class="key eq" onclick="forceEval('sci')">=</button>
+        <button class="key op" onclick="appendRaw('sci','+')">+</button>
+      </div>
+    </div>
+
+    <!-- SCIENTIFIC (Live) -->
+    <div class="card pane" id="pane-scientific-live" style="margin-top:12px">
+      <div class="calc-header">
+        <h3>Scientific Calculator <span class="badge-live"><span class="badge-dot"></span> Live</span></h3>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="mode-toggle" id="sciModeBtnLive">Mode: <span id="sciModeLabelLive">DEG</span></button>
+        </div>
+      </div>
+
+      <div class="live-result" id="sciLivePreview" style="font-size:0.95rem; display:block; color:var(--badge-green);">Live Result: </div>
+
+      <input id="sciLiveInput" class="display" placeholder="Type expressions e.g. sin90, √9, log100, 200+10% (auto-evaluates)" />
+      <div class="live-result" id="sciLiveBelow" style="min-height:18px;color:var(--muted)"></div>
+
+      <div class="grid">
+        <button class="key clear" onclick="clearInput('sciLive')">C</button>
+        <button class="key fn" onclick="appendRaw('sciLive','(')">(</button>
+        <button class="key fn" onclick="appendRaw('sciLive',')')">)</button>
+        <button class="key fn" onclick="appendRaw('sciLive','^')">xʸ</button>
+
+        <button class="key fn" onclick="appendRaw('sciLive','sin')">sin</button>
+        <button class="key fn" onclick="appendRaw('sciLive','cos')">cos</button>
+        <button class="key fn" onclick="appendRaw('sciLive','tan')">tan</button>
+        <button class="key fn" onclick="appendRaw('sciLive','√')">√</button>
+
+        <button class="key fn" onclick="appendRaw('sciLive','log')">log</button>
+        <button class="key fn" onclick="appendRaw('sciLive','ln')">ln</button>
+        <button class="key fn" onclick="appendRaw('sciLive','π')">π</button>
+        <button class="key fn" onclick="appendRaw('sciLive','e')">e</button>
+
+        <button class="key num" onclick="appendRaw('sciLive','7')">7</button>
+        <button class="key num" onclick="appendRaw('sciLive','8')">8</button>
+        <button class="key num" onclick="appendRaw('sciLive','9')">9</button>
+        <button class="key op" onclick="appendRaw('sciLive','/')">÷</button>
+
+        <button class="key num" onclick="appendRaw('sciLive','4')">4</button>
+        <button class="key num" onclick="appendRaw('sciLive','5')">5</button>
+        <button class="key num" onclick="appendRaw('sciLive','6')">6</button>
+        <button class="key op" onclick="appendRaw('sciLive','*')">×</button>
+
+        <button class="key num" onclick="appendRaw('sciLive','1')">1</button>
+        <button class="key num" onclick="appendRaw('sciLive','2')">2</button>
+        <button class="key num" onclick="appendRaw('sciLive','3')">3</button>
+        <button class="key op" onclick="appendRaw('sciLive','-')">−</button>
+
+        <button class="key num" onclick="appendRaw('sciLive','0')">0</button>
+        <button class="key num" onclick="appendRaw('sciLive','.')">.</button>
+        <button class="key eq" onclick="forceEval('sciLive')">=</button>
+        <button class="key op" onclick="appendRaw('sciLive','+')">+</button>
+      </div>
+    </div>
+
+    <!-- EVERYDAY TOOLS (accordion) -->
+    <div class="card pane" id="pane-everyday" style="margin-top:12px">
+      <h3>Everyday Tools 🛠️</h3>
+
+      <div class="acc" id="everyAcc" style="margin-top:10px">
+        <!-- Basic Unit Converter -->
+        <div class="acc-item" data-key="unit-basic">
+          <div class="acc-header" onclick="toggleAcc('unit-basic')">
+            <h4><span class="icon" style="background:#e6f0ff">📏</span> Basic Unit Converter</h4>
+            <div style="display:flex;gap:8px;align-items:center">
+              <small style="color:var(--muted)">Quick conversions</small>
+              <span class="acc-arrow">▼</span>
+            </div>
+          </div>
+          <div class="acc-body">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <select id="uc_category" class="small" onchange="renderUnitOptionsBasic()">
+                <option value="length">Length</option>
+                <option value="mass">Mass</option>
+                <option value="temp">Temperature</option>
+              </select>
+              <input id="uc_value" class="small" placeholder="Value">
+              <select id="uc_from" class="small"></select>
+              <select id="uc_to" class="small"></select>
+              <button class="key fn" onclick="unitConvertBasic()">Convert</button>
+              <button class="key clear" onclick="unitClearBasic()">Clear</button>
+            </div>
+            <div class="result-box" id="uc_result">Result</div>
+          </div>
+        </div>
+
+        <!-- Date & Age -->
+        <div class="acc-item" data-key="date">
+          <div class="acc-header" onclick="toggleAcc('date')">
+            <h4><span class="icon" style="background:#fff7ed">📅</span> Date & Age Calculator</h4>
+            <div style="display:flex;gap:8px;align-items:center">
+              <small style="color:var(--muted)">Difference in years, months, days</small>
+              <span class="acc-arrow">▼</span>
+            </div>
+          </div>
+          <div class="acc-body">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <input id="date_from" type="date" class="small">
+              <input id="date_to" type="date" class="small">
+              <button class="key fn" onclick="useToday()">Use Today</button>
+              <button class="key fn" onclick="calcDateDiff()">Calculate</button>
+              <button class="key clear" onclick="clearDate()">Clear</button>
+            </div>
+            <div class="result-box" id="date_result">Result</div>
+          </div>
+        </div>
+
+        <!-- BMI -->
+        <div class="acc-item" data-key="bmi">
+          <div class="acc-header" onclick="toggleAcc('bmi')">
+            <h4><span class="icon" style="background:#f0fdf4">⚖️</span> BMI Calculator</h4>
+            <div style="display:flex;gap:8px;align-items:center">
+              <small style="color:var(--muted)">Height, Weight, Age, Gender → BMI</small>
+              <span class="acc-arrow">▼</span>
+            </div>
+          </div>
+          <div class="acc-body">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+              <input id="bmi_weight" class="small" placeholder="Weight (kg)">
+              <input id="bmi_height" class="small" placeholder="Height (cm)">
+              <select id="bmi_gender" class="small"><option value="male">Male</option><option value="female">Female</option></select>
+              <input id="bmi_age" class="small" placeholder="Age (years)" type="number" min="0">
+              <button class="key fn" onclick="calcBMI()">Calculate</button>
+              <button class="key clear" onclick="clearBMI()">Clear</button>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;margin-top:10px">
+              <div id="bmiBadge" style="min-width:160px"></div>
+              <div style="flex:1"><canvas id="bmiChart" class="responsive-chart" style="height:160px;"></canvas></div>
+            </div>
+            <div class="result-box" id="bmi_result">Result</div>
+          </div>
+        </div>
+
+        <!-- Advanced Unit Converter (tabbed) - placed at the end -->
+        <div class="acc-item" data-key="unit-adv">
+          <div class="acc-header" onclick="toggleAcc('unit-adv')">
+            <h4><span class="icon" style="background:#eef2ff">⚡</span> Advanced Unit Converter</h4>
+            <div style="display:flex;gap:8px;align-items:center">
+              <small style="color:var(--muted)">Length • Mass • Temperature • Volume • Speed • Time</small>
+              <span class="acc-arrow">▼</span>
+            </div>
+          </div>
+
+          <div class="acc-body">
+            <!-- Tabs -->
+            <div class="u-tabs" id="advTabs">
+              <div class="u-tab active" data-key="length" onclick="switchUTab('length')">
+                <span class="dot" style="background:#2b6cb0"></span> <span style="color:#2b6cb0;font-weight:700">📏 Length</span>
+              </div>
+              <div class="u-tab" data-key="mass" onclick="switchUTab('mass')">
+                <span class="dot" style="background:#16a34a"></span> <span style="color:#16a34a;font-weight:700">⚖️ Mass</span>
+              </div>
+              <div class="u-tab" data-key="temp" onclick="switchUTab('temp')">
+                <span class="dot" style="background:#ef4444"></span> <span style="color:#ef4444;font-weight:700">🌡️ Temp</span>
+              </div>
+              <div class="u-tab" data-key="volume" onclick="switchUTab('volume')">
+                <span class="dot" style="background:#06b6d4"></span> <span style="color:#06b6d4;font-weight:700">🧊 Volume</span>
+              </div>
+              <div class="u-tab" data-key="speed" onclick="switchUTab('speed')">
+                <span class="dot" style="background:#f97316"></span> <span style="color:#f97316;font-weight:700">🏎️ Speed</span>
+              </div>
+              <div class="u-tab" data-key="time" onclick="switchUTab('time')">
+                <span class="dot" style="background:#7c3aed"></span> <span style="color:#7c3aed;font-weight:700">⏱️ Time</span>
+              </div>
+            </div>
+
+            <!-- Panels -->
+            <div id="uPanel" class="u-panel">
+              <!-- dynamic content will be rendered here -->
+              <div id="uContent"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- COMMERCE -->
+    <div class="card pane" id="pane-commerce" style="margin-top:12px">
+      <h3>Commerce Tools</h3>
+      <div class="two-col">
+        <div>
+          <div style="font-weight:700;margin-bottom:6px">Quick %</div>
+          <div style="display:flex;gap:8px">
+            <input id="com_num" class="small" placeholder="Number e.g. 1000">
+            <input id="com_pct" class="small" placeholder="% e.g. 20">
+            <button class="key fn" onclick="comQuick()">Calc</button>
+          </div>
+          <div class="result-box" id="com_pctResult">Result</div>
+        </div>
+        <div>
+          <div style="font-weight:700;margin-bottom:6px">Profit / Loss</div>
+          <div style="display:flex;gap:8px">
+            <input id="com_cp" class="small" placeholder="Cost Price">
+            <input id="com_sp" class="small" placeholder="Selling Price">
+            <button class="key fn" onclick="comProfitLoss()">Calc</button>
+          </div>
+          <div class="result-box" id="com_plResult">Result</div>
+        </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div style="font-weight:700;margin-bottom:6px">Discount</div>
+        <div style="display:flex;gap:8px">
+          <input id="com_price" class="small" placeholder="Original Price">
+          <input id="com_disc" class="small" placeholder="Discount %">
+          <button class="key fn" onclick="comDiscount()">Apply</button>
+        </div>
+        <div class="result-box" id="com_discResult">Result</div>
+      </div>
+    </div>
+
+    <!-- STATISTICS -->
+    <div class="card pane" id="pane-stats" style="margin-top:12px">
+      <h3>Statistics</h3>
+      <input id="stats_input" class="display" placeholder="Enter numbers comma separated e.g. 10,20,20,30">
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="key fn" onclick="statsCalc()">Calculate</button>
+        <button class="key clear" onclick="statsClear()">Clear</button>
+      </div>
+      <div class="result-box" id="stats_out">Stats</div>
+    </div>
+
+    <!-- MATRIX -->
+    <div class="card pane" id="pane-matrix" style="margin-top:12px">
+      <h3>Matrix (2×2 / 3×3)</h3>
+      <div style="display:flex;gap:8px;align-items:center">
+        <label>Size</label>
+        <select id="mat_size" class="small" onchange="renderMatrices()"><option value="2">2 × 2</option><option value="3">3 × 3</option></select>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px">
+        <div><div style="font-weight:700">Matrix A</div><div id="matA"></div></div>
+        <div><div style="font-weight:700">Matrix B</div><div id="matB"></div></div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="key fn" onclick="matDeterminant()">Det A</button>
+        <button class="key fn" onclick="matInverse()">Inv A</button>
+        <button class="key fn" onclick="matMultiply()">A × B</button>
+        <button class="key clear" onclick="matClear()">Clear</button>
+      </div>
+      <div class="result-box" id="mat_out">Matrix results</div>
+    </div>
+
+    <!-- % Change -->
+    <div class="card pane" id="pane-pchange" style="margin-top:12px">
+      <h3>Percentage Change</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input id="pc_old" class="small" placeholder="Old value">
+        <input id="pc_new" class="small" placeholder="New value">
+        <button class="key fn" onclick="calcPercentChange()">Calc</button>
+      </div>
+      <div class="result-box" id="pc_out">Result</div>
+    </div>
+
+    <!-- FINANCE -->
+    <div class="card pane" id="pane-finance" style="margin-top:12px">
+      <h3>Finance Tools</h3>
+
+      <div style="font-weight:700;margin-top:6px">SIP Calculator</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+        <input id="f_sip_amt" class="small" placeholder="Monthly SIP (₹)">
+        <input id="f_sip_rate" class="small" placeholder="Annual return %">
+        <input id="f_sip_years" class="small" placeholder="Years">
+        <button class="key fn" onclick="calcSIP()">Calc</button>
+      </div>
+      <div class="result-box" id="f_sip_out">SIP result</div>
+      <canvas id="sipChart" class="responsive-chart" style="margin-top:8px;max-width:100%;min-height:220px;"></canvas>
+
+      <hr style="margin:12px 0">
+
+      <div style="font-weight:700">Compound Interest</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+        <input id="f_ci_p" class="small" placeholder="Principal (P)">
+        <input id="f_ci_r" class="small" placeholder="Annual Rate %">
+        <input id="f_ci_n" class="small" placeholder="Times/yr (n)">
+        <input id="f_ci_t" class="small" placeholder="Years (t)">
+        <button class="key fn" onclick="calcCompound()">Calc</button>
+      </div>
+      <div class="result-box" id="f_ci_out">Compound result</div>
+      <canvas id="ciChart" class="responsive-chart" style="margin-top:8px;max-width:100%;min-height:220px;"></canvas>
+
+      <hr style="margin:12px 0">
+
+      <div style="font-weight:700">Break-even</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+        <input id="f_be_fixed" class="small" placeholder="Fixed cost (₹)">
+        <input id="f_be_price" class="small" placeholder="Price/unit (₹)">
+        <input id="f_be_variable" class="small" placeholder="Variable cost/unit (₹)">
+        <button class="key fn" onclick="calcBreakEven()">Calc</button>
+      </div>
+      <div class="result-box" id="f_be_out">Break-even result</div>
+      <canvas id="beChart" class="responsive-chart" style="margin-top:8px;max-width:100%;min-height:220px;"></canvas>
+    </div>
+
+    <!-- EMI -->
+    <div class="card pane" id="pane-emi" style="margin-top:12px">
+      <h3>EMI Calculator</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input id="emi_principal" class="small" placeholder="Loan amount (₹)">
+        <input id="emi_rate" class="small" placeholder="Annual %">
+        <input id="emi_months" class="small" placeholder="Months">
+        <button class="key fn" onclick="calcEMI_main()">Calculate</button>
+        <button class="key clear" onclick="clearEMI_main()">Clear</button>
+      </div>
+      <div class="result-box" id="emi_out">EMI result</div>
+      <canvas id="emi_chart" class="responsive-chart" style="margin-top:8px;max-width:100%;min-height:220px;"></canvas>
+    </div>
+
+    <!-- CURRENCY -->
+    <div class="card pane" id="pane-currency" style="margin-top:12px">
+      <h3>Currency Converter</h3>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input id="cur_amount" class="small" placeholder="Amount">
+        <select id="cur_from" class="small">
+          <option>INR</option><option>USD</option><option>EUR</option><option>GBP</option><option>JPY</option><option>CNY</option><option>AUD</option><option>CAD</option><option>SGD</option><option>AED</option><option>PKR</option><option>BDT</option><option>NPR</option><option>LKR</option><option>BTN</option>
+        </select>
+        <select id="cur_to" class="small">
+          <option>USD</option><option>INR</option><option>EUR</option><option>GBP</option><option>JPY</option><option>CNY</option><option>AUD</option><option>CAD</option><option>SGD</option><option>AED</option><option>PKR</option><option>BDT</option><option>NPR</option><option>LKR</option><option>BTN</option>
+        </select>
+        <button class="key fn" onclick="convertCur()">Convert</button>
+      </div>
+      <div class="result-box" id="cur_out">Result</div>
+    </div>
+  </div>
+
+  <!-- Right: History -->
+  <div>
+    <div class="card">
+      <h3>History (last 10)</h3>
+      <div class="history-list" id="historyList">No history yet</div>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button class="key fn" onclick="downloadHistory('txt')">Save .txt</button>
+        <button class="key fn" onclick="downloadHistory('csv')">Save .csv</button>
+        <button class="key clear" onclick="clearHistory()">Clear</button>
+      </div>
+      <div style="margin-top:10px;color:var(--muted);font-size:0.95rem">Click a tab to switch calculators. History updates automatically (includes Everyday Tools).</div>
+    </div>
+  </div>
+</div>
+
+<!-- Floating scroll to top button -->
+<button id="scrollTopBtn" title="Scroll to top">⬆️</button>
+
+<script src="script.js"></script>
+</body>
+</html>
